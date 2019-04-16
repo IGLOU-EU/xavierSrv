@@ -1,2 +1,4 @@
+#%COMMANDE
+%echo -e \"ma commande et les erreur:\\n~outS~\"
 #HTTP_status_codes:URL[:PORT]
-301:https://google.com:443
+200:https://iglou.eu
