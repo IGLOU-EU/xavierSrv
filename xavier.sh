@@ -4,6 +4,8 @@ time=60
 
 cerebro () {
     while read line ; do
+        [ "${line:0:1}" == "#" ] && continue
+
         url=${line#*:}
         status=${line%%:*}
 
