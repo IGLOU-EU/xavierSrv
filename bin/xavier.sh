@@ -32,7 +32,9 @@ xPsy () {
     do
         _buff="${cmdR[$1]}"
         _buff="${_buff/~outS~/$outS}"
-        eval  "$_buff"
+        _buff="$(eval  "$_buff" 2>&1)"
+
+        echo "$_buff"
     done
 }
 
