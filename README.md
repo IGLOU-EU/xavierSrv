@@ -3,7 +3,7 @@
 
 ---
 
-**Xavier isn't a simple guy, but the leader of the X-Men ! With Cerebro, he can watch all your X-services, check their http status, and when a fail coming ...  He use psychic energy for execute some prepared X-request.**  
+**Xavier isn’t a simple guy, but the X-Men leader ! With Cerebro, he can watch all your X-services, check their http status, and when something fails… he uses psychic energy to execute some prepared X-request.**  
 
 ## 🛃 Usage
 Can be use with none, one or two args.  
