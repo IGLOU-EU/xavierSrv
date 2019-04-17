@@ -3,6 +3,8 @@ trap "exit 0" 2 3
 time=60
 
 cerebro () {
+    outS=""
+
     while read line ; do
         [ "${line:0:1}" == "#" ] && continue
         [ "${line:0:1}" == "%" ] && cmdR+=("${line:1}") && continue
@@ -15,14 +17,17 @@ cerebro () {
     done < "${urls}"
 
     if [ -z "$outS" ]; then
-        out="OK!\n$(date +"%d/%m/%Y %T")"
+        outC="OK!\n$(date +"%d/%m/%Y %T")"
     else
-        xPsy
-        out="$outS"
+        if [ "$outS" != "$outC" ]; then
+            xPsy
+        fi
+
+        outC="$outS"
     fi
 
-    echo -e "$out"
-    echo -e "$out" > "$html"
+    echo -e "$outC"
+    echo -e "$outC" > "$html"
 }
 
 xPsy () {
@@ -42,6 +47,7 @@ root="$(cd "$(dirname "$0")"; pwd)"
 html="${1:-${root}/status.html}"
 urls="${2:-${root}/url.list}"
 outS=""
+outC=""
 cmdR=()
 
 if [ "$1" == "-h" ]; then
