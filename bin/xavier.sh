@@ -6,6 +6,7 @@ cerebro () {
     outS=""
 
     while read line ; do
+        [ -z "$line" ] && continue
         [ "${line:0:1}" == "#" ] && continue
         [ "${line:0:1}" == "%" ] && cmdR+=("${line:1}") && continue
 
