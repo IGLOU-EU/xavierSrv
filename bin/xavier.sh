@@ -3,7 +3,8 @@ trap "exit 0" 2 3
 time=60
 
 cerebro () {
-    outS=""
+    cmdR=()
+    local _buff=""
 
     while read line ; do
         [ -z "$line" ] && continue
@@ -14,17 +15,14 @@ cerebro () {
         status=${line%%:*}
 
         rq=$(curl -I -s "$url" -o /dev/null -w "%{http_code}\n")
-        [ $rq -eq $status ] || outS="${outS}${rq} ${url#*//}\n"
+        [ $rq -eq $status ] || _buff="${_buff}${rq} ${url#*//}\n"
     done < "${urls}"
 
-    if [ -z "$outS" ]; then
+    if [ -z "$_buff" ]; then
         outC="OK!\n$(date +"%d/%m/%Y %T")"
-    else
-        if [ "$outS" != "$outC" ]; then
-            xPsy
-        fi
-
-        outC="$outS"
+    elif [ "$_buff" != "$outC" ]; then
+       	outC="$_buff"
+    	xPsy
     fi
 
     echo -e "$outC"
@@ -37,7 +35,7 @@ xPsy () {
     for ((i = 0; i < ${#cmdR[@]}; i++))
     do
         _buff="${cmdR[$1]}"
-        _buff="${_buff/~outS~/$outS}"
+        _buff="${_buff/~outC~/$outC}"
         _buff="$(eval  "$_buff" 2>&1)"
 
         echo "$_buff"
@@ -47,7 +45,6 @@ xPsy () {
 root="$(cd "$(dirname "$0")"; pwd)"
 html="${1:-${root}/status.html}"
 urls="${2:-${root}/url.list}"
-outS=""
 outC=""
 cmdR=()
 
