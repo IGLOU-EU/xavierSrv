@@ -1,0 +1,5 @@
+[app.groupe]
+enable = true
+ssl_check = true
+error = []
+server.name = []
