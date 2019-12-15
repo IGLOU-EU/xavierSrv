@@ -1,8 +1,7 @@
 [overall]
-loopWait = 10
-checkListFile = "/home/adrien/Travail/Git/xavierSrv/examples/etc/xavier-srv/check.toml"
-errorListFile = "/home/adrien/Travail/Git/xavierSrv/examples/etc/xavier-srv/errors.toml"
+loopWait = 10 # Second before retry evry thing
+checkListFile = './examples/etc/xavier-srv/check.toml'
+errorListFile = './examples/etc/xavier-srv/errors.toml'
 
 [http]
-maxWait = 120
-
+maxWait = 120 # Max Microsecond between each request

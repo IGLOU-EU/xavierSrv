@@ -1,4 +1,30 @@
-[[team]]
+[team.IglouEu]
+    [team.IglouEu.mail]
+    process = 'smtp'
 
-[[team.error]]
-name = ""
+        [team.IglouEu.mail.smtp]
+        tls      = true
+        starttls = true
+        port     = '465'
+        host     = 'mail.gandi.net'
+        from     = 'Professeur Xavier <pxavier@iglou.eu>'
+        user     = ''
+        passwd   = ''
+
+        [team.IglouEu.mail.message]
+        recipients = ['a@a.a', 'b@b.b']
+        subject    = '[WRNING][[%TEAM]]'
+        signing    = 'Contact +33 ... for service reloading'
+        body       = '''
+        Some WebAPP from '[%TEAM]' have failed.
+        [%ERRORS]
+        '''
+
+    [team.IglouEu.rest-tchat]
+    process = 'http'
+
+        [team.IglouEu.rest-tchat.http]
+        methods      = 'POST'
+        url          = 'https://toto.tata/hooks/xxxxxxxxxxxxxxxxxxxxxx'
+        body         = '{"team": "[%TEAM]", "errors": "[%TEAM]"}'
+        Content-Type = 'application/json'
