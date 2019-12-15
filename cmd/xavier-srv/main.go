@@ -37,7 +37,32 @@ type CheckList struct {
     } `toml:"team"`
 }
 
-type ErrorList struct {}
+type ErrorList struct {
+	Team map[string]map[string]struct {
+		Process string `toml:"process"`
+		SMTP    struct {
+			TLS      bool   `toml:"tls"`
+			Starttls bool   `toml:"starttls"`
+			Port     string `toml:"port"`
+			Host     string `toml:"host"`
+			From     string `toml:"from"`
+			User     string `toml:"user"`
+			Passwd   string `toml:"passwd"`
+		} `toml:"smtp"`
+		Message struct {
+			Recipients []string `toml:"recipients"`
+			Subject    string   `toml:"subject"`
+			Signing    string   `toml:"signing"`
+			Body       string   `toml:"body"`
+		} `toml:"message"`
+		HTTP    struct {
+			Methods     string `toml:"methods"`
+			URL         string `toml:"url"`
+			Body        string `toml:"body"`
+			ContentType string `toml:"Content-Type"`
+		} `toml:"http"`
+	} `toml:"team"`
+}
 
 var config    Config
 var checkList CheckList
@@ -48,15 +73,15 @@ func main() {
 //init:
     rand.Seed(42)
 
-    if _, err := toml.DecodeFile("/home/adrien/Travail/Git/xavierSrv/examples/etc/xavier-srv/config.toml", &config); err != nil {
+    if _, err := toml.DecodeFile("./examples/etc/xavier-srv/config.toml", &config); err != nil {
         panic(err)
 	}
     if _, err := toml.DecodeFile(config.Overall.CheckListFile, &checkList); err != nil {
         panic(err)
 	}
-    /*if _, err := toml.DecodeFile(config.Overall.ErrorListFile, &errorList); err != nil {
+    if _, err := toml.DecodeFile(config.Overall.ErrorListFile, &errorList); err != nil {
         panic(err)
-	}*/
+	}
 
 loop:
     for index, team := range checkList.Team {
