@@ -1,1 +1,8 @@
-[]
+[overall]
+loopWait = 10
+checkListFile = "/home/adrien/Travail/Git/xavierSrv/examples/etc/xavier-srv/check.toml"
+errorListFile = "/home/adrien/Travail/Git/xavierSrv/examples/etc/xavier-srv/errors.toml"
+
+[http]
+maxWait = 120
+

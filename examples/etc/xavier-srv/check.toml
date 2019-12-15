@@ -10,8 +10,8 @@ error  = ["mail", "rest-tchat"]
 
     [[team.app]]
     name     = "iglou false site"
-    url      = "https://vps685796.ovh.net:2087"
-    response = 2000
+    url      = "http://iglou.eu/"
+    response = 200
 
 [[team]]
 enable = false

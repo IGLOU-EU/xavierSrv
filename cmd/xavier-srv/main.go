@@ -13,7 +13,16 @@ import (
     "github.com/BurntSushi/toml"
 )
 
-type Config struct {}
+type Config struct {
+    Overall struct {
+		LoopWait      int    `toml:"loopWait"`
+		CheckListFile string `toml:"checkListFile"`
+		ErrorListFile string `toml:"errorListFile"`
+	} `toml:"overall"`
+	HTTP struct {
+		MaxWait int `toml:"maxWait"`
+	} `toml:"http"`
+}
 
 type CheckList struct {
 	Team []struct {
@@ -39,13 +48,13 @@ func main() {
 //init:
     rand.Seed(42)
 
-    /*if _, err := toml.DecodeFile("/home/adrien/Travail/Git/xavierSrv/examples/etc/xavier-srv/config.toml", &config); err != nil {
-        panic(err)
-	}*/
-    if _, err := toml.DecodeFile("/home/adrien/Travail/Git/xavierSrv/examples/etc/xavier-srv/check.toml", &checkList); err != nil {
+    if _, err := toml.DecodeFile("/home/adrien/Travail/Git/xavierSrv/examples/etc/xavier-srv/config.toml", &config); err != nil {
         panic(err)
 	}
-    /*if _, err := toml.DecodeFile("/home/adrien/Travail/Git/xavierSrv/examples/etc/xavier-srv/errors.toml", &errorList); err != nil {
+    if _, err := toml.DecodeFile(config.Overall.CheckListFile, &checkList); err != nil {
+        panic(err)
+	}
+    /*if _, err := toml.DecodeFile(config.Overall.ErrorListFile, &errorList); err != nil {
         panic(err)
 	}*/
 
@@ -58,7 +67,7 @@ loop:
     }
 
     wg.Wait()
-    //time.Sleep(time.Duration(config.overall.LOOP_WAIT))
+    time.Sleep(time.Duration(config.Overall.LoopWait))
     goto loop
 }
 
@@ -93,7 +102,7 @@ func xTeam(teamId int) (bool) {
 }
 
 func httpStatus(url string, need int) (bool, error) {
-    //time.Sleep(time.Millisecond * time.Duration(rand.Intn(config.request.wait)))
+    time.Sleep(time.Millisecond * time.Duration(rand.Intn(config.HTTP.MaxWait)))
 
     client := &http.Client{
 	    CheckRedirect: func(req *http.Request, via []*http.Request) error {
