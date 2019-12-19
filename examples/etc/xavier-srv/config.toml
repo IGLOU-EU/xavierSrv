@@ -5,3 +5,7 @@ errorListFile = './examples/etc/xavier-srv/errors.toml'
 
 [http]
 maxWait = 120 # Max Microsecond between each request
+
+[reporting]
+local = true
+dir   = './examples/var/www/'

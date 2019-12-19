@@ -1,7 +1,6 @@
 [[team]]
-enable = true
-name   = 'IglouEu'
-error  = ['mail', 'rest-tchat']
+enable  = true
+name    = 'IglouEu'
 
     [[team.app]]
     name     = 'iglou web site'
