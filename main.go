@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"math/rand"
 	"net/http"
 	"strconv"
@@ -10,31 +9,23 @@ import (
 	"sync"
 	"time"
 
-	"git.iglou.eu/xavierSrv/tomlstruct"
-	"github.com/BurntSushi/toml"
+	"git.iglou.eu/xavierSrv/config"
+	"git.iglou.eu/xavierSrv/tools"
 )
 
-var config tomlstruct.Config
-var checkList tomlstruct.CheckList
-var errorList tomlstruct.ErrorList
 var wg sync.WaitGroup
 
 func main() {
 	//init:
 	rand.Seed(42)
-
-	if _, err := toml.DecodeFile("./examples/etc/xavier-srv/config.toml", &config); err != nil {
-		panic(err)
-	}
-	if _, err := toml.DecodeFile(config.Overall.CheckListFile, &checkList); err != nil {
-		panic(err)
-	}
-	if _, err := toml.DecodeFile(config.Overall.ErrorListFile, &errorList); err != nil {
-		panic(err)
-	}
+	config.Global.Init(&config.Check, &config.Error)
+	tools.InitLogConf(
+		config.Global.Overall.LogFile,
+		config.Global.Overall.LogVerbose,
+	)
 
 loop:
-	for index, team := range checkList.Team {
+	for index, team := range config.Check.Team {
 		if team.Enable {
 			wg.Add(1)
 			go xTeam(index)
@@ -42,37 +33,22 @@ loop:
 	}
 
 	wg.Wait()
-	time.Sleep(time.Duration(config.Overall.LoopWait))
+	time.Sleep(time.Duration(config.Global.Overall.LoopWait))
 	goto loop
 }
 
-func pushToLog(lvlID int, message error) {
-	lvlName := "??"
-
-	switch lvlID {
-	case 6:
-		lvlName = "Info"
-	case 3:
-		lvlName = "Error"
-	case 0:
-		lvlName = "Panic"
-	}
-
-	fmt.Printf("[%s] (%s) %s\n", time.Now().Format(time.RFC3339), lvlName, message)
-}
-
 func xTeam(teamID int) bool {
-	team := &checkList.Team[teamID]
+	team := &config.Check.Team[teamID]
 	var failures [][]string
 
 	for _, app := range team.App {
-		pushToLog(6, errors.New("Checking '"+app.Name+"' ..."))
+		tools.PushToLog(6, errors.New("Checking '"+app.Name+"' ..."))
 
 		if _, err := cerebro(app.URL, app.Response); err != nil {
 			returned := []string{app.Name, err.Error()}
 			failures = append(failures, returned)
 
-			pushToLog(3, err)
+			tools.PushToLog(3, err)
 		}
 	}
 
@@ -87,7 +63,7 @@ func xTeam(teamID int) bool {
 func xTeamReport(team string, failures [][]string) (bool, error) {
 	//var message string {"name":"","error":""}
 
-	if config.Reporting.Local {
+	if config.Global.Reporting.Local {
 		//report.LocalSave(team, report.LocalBuild(failures))
 	}
 
@@ -99,7 +75,7 @@ func xTeamReport(team string, failures [][]string) (bool, error) {
 	}
 
 	// for reporting
-	for _, reportProcess := range errorList.Team[team].Report {
+	for _, reportProcess := range config.Error.Team[team].Report {
 		switch reportProcess.Process {
 		case "smtp":
 			subject := strings.ReplaceAll(reportProcess.Subject, "[%TEAM]", team)
@@ -113,12 +89,12 @@ func xTeamReport(team string, failures [][]string) (bool, error) {
 			_ = message
 			//report.byHttp(methods, url, message string)
 		default:
-			pushToLog(3, errors.New("Unknow '"+reportProcess.Process+"' reporting process"))
+			tools.PushToLog(3, errors.New("Unknow '"+reportProcess.Process+"' reporting process"))
 		}
 	}
 	// exec type
 
-	/*if config.Reporting.ReportJSON {
+	/*if config.Global.Reporting.ReportJSON {
 		jsonFile := "{\"status\":\"error\",\"date\":\""
 		jsonFile += time.Now().Format(time.RFC3339)
 		jsonFile += "\",\"listing\":["
@@ -158,7 +134,7 @@ func xTeamReport(team string, failures [][]string) (bool, error) {
 }
 
 func httpStatus(url string, need int) (bool, error) {
-	time.Sleep(time.Millisecond * time.Duration(rand.Intn(config.HTTP.MaxWait)))
+	time.Sleep(time.Millisecond * time.Duration(rand.Intn(config.Global.HTTP.MaxWait)))
 
 	client := &http.Client{
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {

@@ -1,4 +1,4 @@
-package tomlstruct
+package config
 
 // ErrorList : Define struct for error list configuration file
 type ErrorList struct {

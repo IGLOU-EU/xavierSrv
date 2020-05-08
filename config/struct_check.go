@@ -1,4 +1,4 @@
-package tomlstruct
+package config
 
 // CheckList : Define struct for check list configuration file
 type CheckList struct {

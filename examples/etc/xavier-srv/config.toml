@@ -1,5 +1,7 @@
 [overall]
 loopWait = 10 # Second before retry evry thing
+logFile = './result.log'
+logVerbose = false
 checkListFile = './examples/etc/xavier-srv/check.toml'
 errorListFile = './examples/etc/xavier-srv/errors.toml'
 
