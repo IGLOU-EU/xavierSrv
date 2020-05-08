@@ -10,60 +10,13 @@ import (
 	"sync"
 	"time"
 
+	"git.iglou.eu/xavierSrv/tomlstruct"
 	"github.com/BurntSushi/toml"
 )
 
-// Config is for
-type Config struct {
-	Overall struct {
-		LoopWait      int    `toml:"loopWait"`
-		CheckListFile string `toml:"checkListFile"`
-		ErrorListFile string `toml:"errorListFile"`
-	} `toml:"overall"`
-	HTTP struct {
-		MaxWait int `toml:"maxWait"`
-	} `toml:"http"`
-	Reporting struct {
-		Local bool   `toml:"local"`
-		Dir   string `toml:"dir"`
-	} `toml:"reporting"`
-}
-
-// CheckList is for
-type CheckList struct {
-	Team []struct {
-		Enable bool   `toml:"enable"`
-		Name   string `toml:"name"`
-		App    []struct {
-			Name     string `toml:"name"`
-			URL      string `toml:"url"`
-			Response int    `toml:"response"`
-		} `toml:"app"`
-	} `toml:"team"`
-}
-
-// ErrorList  is for
-type ErrorList struct {
-	Team map[string]struct {
-		Report []struct {
-			Process     string   `toml:"process"`
-			Host        string   `toml:"host,omitempty"`
-			From        string   `toml:"from,omitempty"`
-			User        string   `toml:"user,omitempty"`
-			Passwd      string   `toml:"passwd,omitempty"`
-			Recipients  []string `toml:"recipients,omitempty"`
-			Subject     string   `toml:"subject,omitempty"`
-			Body        string   `toml:"body"`
-			Methods     string   `toml:"methods,omitempty"`
-			URL         string   `toml:"url,omitempty"`
-			ContentType string   `toml:"Content-Type,omitempty"`
-		} `toml:"report"`
-	} `toml:"team"`
-}
-
-var config Config
-var checkList CheckList
-var errorList ErrorList
+var config tomlstruct.Config
+var checkList tomlstruct.CheckList
+var errorList tomlstruct.ErrorList
 var wg sync.WaitGroup
 
 func main() {
@@ -93,7 +46,7 @@ loop:
 	goto loop
 }
 
-func pushLog(lvlID int, message error) {
+func pushToLog(lvlID int, message error) {
 	lvlName := "??"
 
 	switch lvlID {
@@ -113,13 +66,13 @@ func xTeam(teamID int) bool {
 	var failures [][]string
 
 	for _, app := range team.App {
-		pushLog(6, errors.New("Checking '"+app.Name+"' ..."))
+		pushToLog(6, errors.New("Checking '"+app.Name+"' ..."))
 
 		if _, err := cerebro(app.URL, app.Response); err != nil {
 			returned := []string{app.Name, err.Error()}
 			failures = append(failures, returned)
 
-			pushLog(3, err)
+			pushToLog(3, err)
 		}
 	}
 
@@ -160,7 +113,7 @@ func xTeamReport(team string, failures [][]string) (bool, error) {
 			_ = message
 			//report.byHttp(methods, url, message string)
 		default:
-			pushLog(3, errors.New("Unknow '"+reportProcess.Process+"' reporting process"))
+			pushToLog(3, errors.New("Unknow '"+reportProcess.Process+"' reporting process"))
 		}
 	}
 	// exec type
