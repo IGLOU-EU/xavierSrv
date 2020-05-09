@@ -24,7 +24,7 @@ func main() {
 		config.Global.Overall.LogVerbose,
 	)
 
-loop:
+	//loop:
 	for index, team := range config.Check.Team {
 		if team.Enable {
 			wg.Add(1)
@@ -34,7 +34,7 @@ loop:
 
 	wg.Wait()
 	time.Sleep(time.Duration(config.Global.Overall.LoopWait))
-	goto loop
+	//goto loop
 }
 
 func xTeam(teamID int) bool {
@@ -48,7 +48,7 @@ func xTeam(teamID int) bool {
 			returned := []string{app.Name, err.Error()}
 			failures = append(failures, returned)
 
-			tools.PushToLog(3, err)
+			tools.PushToLog(6, err)
 		}
 	}
 
@@ -71,7 +71,7 @@ func xTeamReport(team string, failures [][]string) (bool, error) {
 	reportMessage := ""
 	for i := range failures {
 		reportMessage += "[" + failures[i][0] + "]" + "\n" +
-			failures[i][1] + "\n\n"
+			failures[i][1] + "\n"
 	}
 
 	// for reporting
@@ -85,9 +85,14 @@ func xTeamReport(team string, failures [][]string) (bool, error) {
 			//report.byMail(host, from, user, passwd, subject, message string, recip []string)
 		case "http":
 			message := strings.ReplaceAll(reportProcess.Body, "[%TEAM]", team)
-			message = strings.ReplaceAll(reportProcess.Body, "[%ERRORS]", team)
-			_ = message
-			//report.byHttp(methods, url, message string)
+
+			if reportProcess.Methods == "POST" {
+				message = strings.ReplaceAll(message, "[%ERRORS]", tools.JsonEscapeString(reportMessage))
+			} else {
+				message = strings.ReplaceAll(message, "[%ERRORS]", reportMessage)
+			}
+
+			tools.HttpReport(reportProcess.Methods, reportProcess.URL, message)
 		default:
 			tools.PushToLog(3, errors.New("Unknow '"+reportProcess.Process+"' reporting process"))
 		}

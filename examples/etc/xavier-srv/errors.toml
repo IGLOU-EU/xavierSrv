@@ -8,12 +8,23 @@
     recipients = ['a@a.a', 'b@b.b']
     subject    = '🤯 [WRNING][[%TEAM]] Error on webapp'
     body       = '''
-        Some WebAPP from '[%TEAM]' have failed.
-        [%ERRORS]
-        '''
+Some WebAPP from '[%TEAM]' have failed.
+
+[%ERRORS]
+'''
 
     [[team.IglouEu.report]]
     process = 'http'
     methods = 'POST'
-    url     = 'https://toto.tata/hooks/xxxxxxxxxxxxxxxxxxxxxx'
-    body    = '{"team": "[%TEAM]", "errors": "[%ERRORS]"}'
+    url     = 'https://tchat.fr/hooks/'
+    body    = '{"text": "Some WebAPP from `[%TEAM]` have failed.\n\n[%ERRORS]"}'
+
+    [[team.IglouEu.report]]
+    process = 'http'
+    methods = 'GET'
+    url     = 'https://smsapi.free-mobile.fr/sendmsg?user=&pass=&msg='
+    body    = '''
+Some WebAPP from '[%TEAM]' have failed.
+
+[%ERRORS]
+'''
