@@ -3,8 +3,6 @@ package main
 import (
 	"errors"
 	"math/rand"
-	"net/http"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -138,33 +136,10 @@ func xTeamReport(team string, failures [][]string) (bool, error) {
 	return true, nil
 }
 
-func httpStatus(url string, need int) (bool, error) {
-	time.Sleep(time.Millisecond * time.Duration(rand.Intn(config.Global.HTTP.MaxWait)))
-
-	client := &http.Client{
-		CheckRedirect: func(req *http.Request, via []*http.Request) error {
-			return http.ErrUseLastResponse
-		}}
-
-	resp, err := client.Head(url)
-
-	if err == nil {
-		statusCode := (need == resp.StatusCode)
-
-		if statusCode {
-			return true, nil
-		}
-
-		return false, errors.New("Head " + url + ": Response " + strconv.Itoa(resp.StatusCode) + ": Expected status code " + strconv.Itoa(need))
-	}
-
-	return false, err
-}
-
 func cerebro(url string, need int) (bool, error) {
-	xPsyAgatha, errAgatha := httpStatus(url, need)
-	xPsyArthur, errArthur := httpStatus(url, need)
-	xPsyDash, errDash := httpStatus(url, need)
+	xPsyAgatha, errAgatha := tools.HttpStatus(url, need)
+	xPsyArthur, errArthur := tools.HttpStatus(url, need)
+	xPsyDash, errDash := tools.HttpStatus(url, need)
 
 	if (xPsyAgatha && xPsyArthur) ||
 		(xPsyAgatha && xPsyDash) ||
