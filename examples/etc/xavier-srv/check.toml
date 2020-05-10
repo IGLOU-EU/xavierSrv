@@ -1,0 +1,17 @@
+[[team]]
+enable  = true
+name    = 'IglouEu'
+
+    [[team.app]]
+    name     = 'iglou web site'
+    url      = 'https://iglou.eu/'
+    response = 200
+
+    [[team.app]]
+    name     = 'iglou false site'
+    url      = 'http://iglou.eu/'
+    response = 200
+
+[[team]]
+enable = false
+name   = 'test'

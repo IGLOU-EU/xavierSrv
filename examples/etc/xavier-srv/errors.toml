@@ -1,0 +1,31 @@
+[team.IglouEu]
+    [[team.IglouEu.report]]
+    process    = 'smtp'
+    encrypt    = 'tls'
+    host       = 'mail.gandi.net:587'
+    from       = 'Professeur Xavier <pxavier@iglou.eu>'
+    user       = ''
+    passwd     = ''
+    recipients = ['garbage@yopmail.com', 'garbage2@yopmail.com']
+    subject    = '🤯 [WARNING][[%TEAM]] Error on webapp'
+    body       = '''
+Some WebAPP from team '[%TEAM]' have failed.
+
+[%ERRORS]
+'''
+
+    [[team.IglouEu.report]]
+    process = 'http'
+    methods = 'POST'
+    url     = 'https://tchat.fr/hooks/'
+    body    = '{"text": "Some WebAPP from `[%TEAM]` have failed.\n\n[%ERRORS]"}'
+
+    [[team.IglouEu.report]]
+    process = 'http'
+    methods = 'GET'
+    url     = 'https://smsapi.free-mobile.fr/sendmsg?user=&pass=&msg='
+    body    = '''
+Some WebAPP from team '[%TEAM]' have failed.
+
+[%ERRORS]
+'''

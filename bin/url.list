@@ -1,4 +1,0 @@
-#%COMMANDE
-%echo -e \"ma commande et les erreur:\\n~outS~\"
-#HTTP_status_codes:URL[:PORT]
-200:https://iglou.eu
