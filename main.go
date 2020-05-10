@@ -78,9 +78,17 @@ func xTeamReport(team string, failures [][]string) (bool, error) {
 		case "smtp":
 			subject := strings.ReplaceAll(reportProcess.Subject, "[%TEAM]", team)
 			message := strings.ReplaceAll(reportProcess.Body, "[%TEAM]", team)
-			message = strings.ReplaceAll(reportProcess.Body, "[%ERRORS]", team)
-			_ = subject + message
-			//report.byMail(host, from, user, passwd, subject, message string, recip []string)
+			message = strings.ReplaceAll(message, "[%ERRORS]", reportMessage)
+
+			tools.SmtpReport(
+				reportProcess.Host,
+				reportProcess.Encrypt,
+				reportProcess.From,
+				reportProcess.User,
+				reportProcess.Passwd,
+				reportProcess.Recipients,
+				subject, message,
+			)
 		case "http":
 			message := strings.ReplaceAll(reportProcess.Body, "[%TEAM]", team)
 
@@ -137,9 +145,9 @@ func xTeamReport(team string, failures [][]string) (bool, error) {
 }
 
 func cerebro(url string, need int) (bool, error) {
-	xPsyAgatha, errAgatha := tools.HttpStatus(url, need)
-	xPsyArthur, errArthur := tools.HttpStatus(url, need)
-	xPsyDash, errDash := tools.HttpStatus(url, need)
+	xPsyAgatha, errAgatha := tools.HttpStatus(url, need, config.Global.HTTP.MaxWait)
+	xPsyArthur, errArthur := tools.HttpStatus(url, need, config.Global.HTTP.MaxWait)
+	xPsyDash, errDash := tools.HttpStatus(url, need, config.Global.HTTP.MaxWait)
 
 	if (xPsyAgatha && xPsyArthur) ||
 		(xPsyAgatha && xPsyDash) ||

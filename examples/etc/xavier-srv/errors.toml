@@ -1,14 +1,15 @@
 [team.IglouEu]
     [[team.IglouEu.report]]
     process    = 'smtp'
-    host       = 'mail.gandi.net:465'
+    encrypt    = 'tls'
+    host       = 'mail.gandi.net:587'
     from       = 'Professeur Xavier <pxavier@iglou.eu>'
     user       = ''
     passwd     = ''
-    recipients = ['a@a.a', 'b@b.b']
-    subject    = '🤯 [WRNING][[%TEAM]] Error on webapp'
+    recipients = ['garbage@yopmail.com', 'garbage2@yopmail.com']
+    subject    = '🤯 [WARNING][[%TEAM]] Error on webapp'
     body       = '''
-Some WebAPP from '[%TEAM]' have failed.
+Some WebAPP from team '[%TEAM]' have failed.
 
 [%ERRORS]
 '''
@@ -24,7 +25,7 @@ Some WebAPP from '[%TEAM]' have failed.
     methods = 'GET'
     url     = 'https://smsapi.free-mobile.fr/sendmsg?user=&pass=&msg='
     body    = '''
-Some WebAPP from '[%TEAM]' have failed.
+Some WebAPP from team '[%TEAM]' have failed.
 
 [%ERRORS]
 '''

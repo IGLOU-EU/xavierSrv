@@ -7,8 +7,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"git.iglou.eu/xavierSrv/config"
 )
 
 func JsonEscapeString(d string) string {
@@ -25,8 +23,8 @@ func JsonEscapeString(d string) string {
 	return r.Replace(d)
 }
 
-func HttpStatus(url string, need int) (bool, error) {
-	time.Sleep(time.Millisecond * time.Duration(rand.Intn(config.Global.HTTP.MaxWait)))
+func HttpStatus(url string, need int, mwait int) (bool, error) {
+	time.Sleep(time.Millisecond * time.Duration(rand.Intn(mwait)))
 
 	client := &http.Client{
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {

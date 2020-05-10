@@ -5,6 +5,7 @@ type ErrorList struct {
 	Team map[string]struct {
 		Report []struct {
 			Process     string   `toml:"process"`
+			Encrypt     string   `toml:"encrypt"`
 			Host        string   `toml:"host,omitempty"`
 			From        string   `toml:"from,omitempty"`
 			User        string   `toml:"user,omitempty"`
